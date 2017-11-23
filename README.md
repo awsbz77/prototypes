@@ -1,5 +1,5 @@
 # excel_templates
-Excel Templates for the Use
+Excel Templates for everyday Use
 
 
 The best way to store knowledge
