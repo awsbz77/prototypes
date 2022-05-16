@@ -1,0 +1,1111 @@
+openapi: 3.0.3
+info:
+  version: 0.1
+  title: Apache Fineract
+  description: |-
+    Apache Fineract is a secure, multi-tenanted microfinance platform
+
+    The goal of the Apache Fineract API is to empower developers to build apps on top of the Apache Fineract Platform<br>The [reference app](https://cui.fineract.dev) (username: mifos, password: password) works on the same demo tenant as the interactive links in this documentation
+
+    - The API is organized around [REST](https://en.wikipedia.org/wiki/Representational_state_transfer)
+    - Find out more about Apache Fineract [here](/fineract-provider/api-docs/apiLive.htm#top)
+    - You can [Try The API From Your Browser](/fineract-provider/api-docs/apiLive.htm#interact)
+    - The Generic Options are available [here](/fineract-provider/api-docs/apiLive.htm#genopts)
+    - Find out more about [Updating Dates and Numbers](/fineract-provider/api-docs/apiLive.htm#dates_and_numbers)
+    - For the Authentication and the Basic of HTTP and HTTPS refer [here](/fineract-provider/api-docs/apiLive.htm#authentication_overview)
+    - Check about ERROR codes [here](/fineract-provider/api-docs/apiLive.htm#errors)
+
+    Please refer to the [old documentation](/fineract-provider/api-docs/apiLive.htm) for any documentation queries
+  contact:
+    email: dev@fineract.apache.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: /fineract-provider/api/v1
+- url: https://demo.fineract.dev/fineract-provider/api/v1
+security:
+- basicAuth: []
+  tenantid: []
+paths:
+  /client/{clientid}/addresses:
+    get:
+      tags:
+      - Clients Address
+      summary: List all addresses for a Client
+      description: |-
+        Example Requests:
+
+        client/1/addresses
+
+
+        clients/1/addresses?status=false,true&&type=1,2,3
+      operationId: getAddresses_1
+      parameters:
+      - name: status
+        in: query
+        description: status
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: type
+        schema:
+          type: integer
+          format: int64
+      - name: clientid
+        in: path
+        description: clientId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetClientClientIdAddressesResponse'
+    put:
+      tags:
+      - Clients Address
+      summary: Update an address for a Client
+      description: |-
+        All the address fields can be updated by using update client address API
+
+        Mandatory Fields
+        type and addressId
+      operationId: updateClientAddress
+      parameters:
+      - name: clientid
+        in: path
+        description: clientId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutClientClientIdAddressesRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PutClientClientIdAddressesResponse'
+    post:
+      tags:
+      - Clients Address
+      summary: Create an address for a Client
+      description: "Mandatory Fields : \ntype and clientId"
+      operationId: addClientAddress
+      parameters:
+      - name: type
+        in: query
+        description: type
+        schema:
+          type: integer
+          format: int64
+      - name: clientid
+        in: path
+        description: clientId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostClientClientIdAddressesRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostClientClientIdAddressesResponse'
+  /client/addresses/template:
+    get:
+      tags:
+      - Clients Address
+      operationId: getAddressesTemplate
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: string
+  /clients/{clientId}:
+    get:
+      tags:
+      - Client
+      summary: Retrieve a Client
+      description: |-
+        Example Requests:
+
+        clients/1
+
+
+        clients/1?template=true
+
+
+        clients/1?fields=id,displayName,officeName
+      operationId: retrieveOne_11
+      parameters:
+      - name: clientId
+        in: path
+        description: clientId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: staffInSelectedOfficeOnly
+        in: query
+        description: staffInSelectedOfficeOnly
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetClientsClientIdResponse'
+    put:
+      tags:
+      - Client
+      summary: Update a Client
+      description: |-
+        Note: You can update any of the basic attributes of a client (but not its associations) using this API.
+
+        Changing the relationship between a client and its office is not supported through this API. An API specific to handling transfers of clients between offices is available for the same.
+
+        The relationship between a client and a group must be removed through the Groups API.
+      operationId: update_10
+      parameters:
+      - name: clientId
+        in: path
+        description: clientId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutClientsClientIdRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PutClientsClientIdResponse'
+    post:
+      tags:
+      - Client
+      summary: Activate a Client | Close a Client | Reject a Client | Withdraw a Client
+        | Reactivate a Client | UndoReject a Client | UndoWithdraw a Client | Assign
+        a Staff | Unassign a Staff | Update Default Savings Account | Propose a Client
+        Transfer | Withdraw a Client Transfer | Reject a Client Transfer | Accept
+        a Client Transfer | Propose and Accept a Client Transfer
+      description: |-
+        Activate a Client:
+
+        Clients can be created in a Pending state. This API exists to enable client activation (for when a client becomes an approved member of the financial Institution).
+
+        If the client happens to be already active this API will result in an error.
+
+        Close a Client:
+
+        Clients can be closed if they do not have any non-closed loans/savingsAccount. This API exists to close a client .
+
+        If the client have any active loans/savingsAccount this API will result in an error.
+
+        Reject a Client:
+
+        Clients can be rejected when client is in pending for activation status.
+
+        If the client is any other status, this API throws an error.
+
+        Mandatory Fields: rejectionDate, rejectionReasonId
+
+        Withdraw a Client:
+
+        Client applications can be withdrawn when client is in a pending for activation status.
+
+        If the client is any other status, this API throws an error.
+
+        Mandatory Fields: withdrawalDate, withdrawalReasonId
+
+        Reactivate a Client: Clients can be reactivated after they have been closed.
+
+        Trying to reactivate a client in any other state throws an error.
+
+        Mandatory Fields: reactivationDate
+
+        UndoReject a Client:
+
+        Clients can be reactivated after they have been rejected.
+
+        Trying to reactivate a client in any other state throws an error.
+
+        Mandatory Fields: reopenedDateUndoWithdraw a Client:
+
+        Clients can be reactivated after they have been withdrawn.
+
+        Trying to reactivate a client in any other state throws an error.
+
+        Mandatory Fields: reopenedDate
+
+        Assign a Staff:
+
+        Allows you to assign a Staff for existed Client.
+
+        The selected Staff should belong to the same office (or an officer higher up in the hierarchy) as the Client he manages.
+
+        Unassign a Staff:
+
+        Allows you to unassign the Staff assigned to a Client.
+
+        Update Default Savings Account:
+
+        Allows you to modify or assign a default savings account for an existing Client.
+
+        The selected savings account should be one among the existing savings account for a particular customer.
+
+        Propose a Client Transfer:
+
+        Allows you to propose the transfer of a Client to a different Office.
+
+        Withdraw a Client Transfer:
+
+        Allows you to withdraw the proposed transfer of a Client to a different Office.
+
+        Withdrawal can happen only if the destination Branch (to which the transfer was proposed) has not already accepted the transfer proposal
+
+        Reject a Client Transfer:
+
+        Allows the Destination Branch to reject the proposed Client Transfer.
+
+        Accept a Client Transfer:
+
+        Allows the Destination Branch to accept the proposed Client Transfer.
+
+        The destination branch may also choose to link this client to a group (in which case, any existing active JLG loan of the client is rescheduled to match the meeting frequency of the group) and loan Officer at the time of accepting the transfer
+
+        Propose and Accept a Client Transfer:
+
+        Abstraction over the Propose and Accept Client Transfer API's which enable a user with Data Scope over both the Target and Destination Branches to directly transfer a Client to the destination Office.
+
+        Showing request/response for 'Reject a Client Transfer'
+      operationId: activate_1
+      parameters:
+      - name: clientId
+        in: path
+        description: clientId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: command
+        in: query
+        description: command
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostClientsClientIdRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostClientsClientIdResponse'
+    delete:
+      tags:
+      - Client
+      summary: Delete a Client
+      description: "If a client is in Pending state, you are allowed to Delete it.\
+        \ The delete is a 'hard delete' and cannot be recovered from. Once clients\
+        \ become active or have loans or savings associated with them, you cannot\
+        \ delete the client but you may Close the client if they have left the program."
+      operationId: delete_9
+      parameters:
+      - name: clientId
+        in: path
+        description: clientId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteClientsClientIdRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteClientsClientIdResponse'
+  /clients:
+    get:
+      tags:
+      - Client
+      summary: List Clients
+      description: |-
+        The list capability of clients can support pagination and sorting.
+
+        Example Requests:
+
+        clients
+
+        clients?fields=displayName,officeName,timeline
+
+        clients?offset=10&limit=50
+
+        clients?orderBy=displayName&sortOrder=DESC
+      operationId: retrieveAll_21
+      parameters:
+      - name: sqlSearch
+        in: query
+        description: sqlSearch
+        schema:
+          type: string
+      - name: officeId
+        in: query
+        description: officeId
+        schema:
+          type: integer
+          format: int64
+      - name: externalId
+        in: query
+        description: externalId
+        schema:
+          type: string
+      - name: displayName
+        in: query
+        description: displayName
+        schema:
+          type: string
+      - name: firstName
+        in: query
+        description: firstName
+        schema:
+          type: string
+      - name: lastName
+        in: query
+        description: lastName
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: status
+        schema:
+          type: string
+      - name: underHierarchy
+        in: query
+        description: underHierarchy
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: offset
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: limit
+        schema:
+          type: integer
+          format: int32
+      - name: orderBy
+        in: query
+        description: orderBy
+        schema:
+          type: string
+      - name: sortOrder
+        in: query
+        description: sortOrder
+        schema:
+          type: string
+      - name: orphansOnly
+        in: query
+        description: orphansOnly
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetClientsResponse'
+    post:
+      tags:
+      - Client
+      summary: Create a Client
+      description: |-
+        Note:
+
+        1. You can enter either:firstname/middlename/lastname - for a person (middlename is optional) OR fullname - for a business or organisation (or person known by one name).
+
+        2.If address is enable(enable-address=true), then additional field called address has to be passed.
+
+        Mandatory Fields: firstname and lastname OR fullname, officeId, active=true and activationDate OR active=false, if(address enabled) address
+
+        Optional Fields: groupId, externalId, accountNo, staffId, mobileNo, savingsProductId, genderId, clientTypeId, clientClassificationId
+      operationId: create_6
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostClientsRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostClientsResponse'  
+components:
+  schemas:
+    GetPasswordPreferencesTemplateResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        description:
+          type: string
+          example: Password must be at least 1 character and not more that 50 characters
+            long
+        active:
+          type: boolean
+          example: true
+        key:
+          type: string
+          example: simple
+      description: GetPasswordPreferencesTemplateResponse
+    PutPasswordPreferencesTemplateRequest:
+      type: object
+      properties:
+        validationPolicyId:
+          type: integer
+          format: int64
+          example: 1
+      description: PutPasswordPreferencesTemplateRequest
+    GetPermissionsResponse:
+      type: object
+      properties:
+        grouping:
+          type: string
+          example: authorisation
+        code:
+          type: string
+          example: READ_PERMISSION
+        entityName:
+          type: string
+          example: PERMISSION
+        actionName:
+          type: string
+          example: READ
+        selected:
+          type: boolean
+          example: true
+      description: GetPermissionsResponse
+    PutPermissionsRequest:
+      type: object
+      properties:
+        permissions:
+          type: string
+          example: |-
+            "CREATE_GUARANTOR":true,
+                "CREATE_CLIENT":true
+      description: PutPermissionsRequest
+    PostRolesRoleIdResponse:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          format: int64
+          example: 1
+      description: PostRolesRoleIdResponse
+    PostRolesRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Another Role Name
+        description:
+          type: string
+          example: A description outlining the purpose of this role in relation to
+            the application.
+      description: PostRolesRequest
+    PostRolesResponse:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          format: int64
+          example: 1
+      description: PostRolesResponse
+    DeleteRolesRoleIdResponse:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          format: int64
+          example: 1
+      description: DeleteRolesRoleIdResponse
+    GetRolesResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Super Users
+        description:
+          type: string
+          example: This role provides all application permissions.
+      description: GetRolesResponse
+    GetRolesRoleIdResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Super Users
+        description:
+          type: string
+          example: This role provides all application permissions.
+      description: GetRolesRoleIdResponse
+    GetRolesRoleIdPermissionsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Super Users
+        description:
+          type: string
+          example: This role provides all application permissions.
+        permissionUsageData:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetRolesRoleIdPermissionsResponsePermissionData'
+      description: GetRolesRoleIdPermissionsResponse
+    GetRolesRoleIdPermissionsResponsePermissionData:
+      type: object
+      properties:
+        grouping:
+          type: string
+          example: authorisation
+        code:
+          type: string
+          example: READ_PERMISSION
+        entityName:
+          type: string
+          example: PERMISSION
+        actionName:
+          type: string
+          example: READ
+        selected:
+          type: boolean
+          example: false
+    PutRolesRoleIdRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          example: some description(changed)
+      description: PutRolesRoleIdRequest
+    PutRolesRoleIdResponse:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          format: int64
+          example: 1
+        changes:
+          $ref: '#/components/schemas/PutRolesRoleIdResponseChanges'
+      description: PutRolesRoleIdResponse
+    PutRolesRoleIdResponseChanges:
+      type: object
+      properties:
+        description:
+          type: string
+          example: some description(changed)
+    PostRolesRoleIdPermissionsResponsePermissions:
+      type: object
+      properties:
+        ALL_FUNCTIONS_READ:
+          type: string
+          example: "true"
+    PutRolesRoleIdPermissionsRequest:
+      type: object
+      properties:
+        permissions:
+          $ref: '#/components/schemas/PostRolesRoleIdPermissionsResponsePermissions'
+      description: PutRolesRoleIdPermissionsRequest
+    PutRolesRoleIdPermissionsResponse:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          format: int64
+          example: 8
+        permissions:
+          $ref: '#/components/schemas/PostRolesRoleIdPermissionsResponsePermissions'
+      description: PutRolesRoleIdPermissionsResponse
+    PostUsersRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: newuser
+        firstname:
+          type: string
+          example: Test
+        lastname:
+          type: string
+          example: User
+        email:
+          type: string
+          example: whatever@mifos.org
+        officeId:
+          type: integer
+          format: int64
+          example: 1
+        staffId:
+          type: integer
+          format: int64
+          example: 1
+        roles:
+          type: string
+          example: "[2,3]"
+        sendPasswordToEmail:
+          type: boolean
+          example: true
+        isSelfServiceUser:
+          type: boolean
+          example: true
+      description: PostUsersRequest
+    PostUsersResponse:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+          example: 1
+        resourceId:
+          type: integer
+          format: int64
+          example: 11
+      description: PostUsersResponse
+    DeleteUsersUserIdResponse:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+          example: 1
+        resourceId:
+          type: integer
+          format: int64
+          example: 11
+        changes:
+          $ref: '#/components/schemas/DeleteUsersUserIdResponseChanges'
+      description: DeleteUsersUserIdResponse
+    DeleteUsersUserIdResponseChanges:
+      type: object
+    GetUsersResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: mifos
+        officeId:
+          type: integer
+          format: int64
+          example: 1
+        officeName:
+          type: string
+          example: Head Office
+        firstname:
+          type: string
+          example: App
+        lastname:
+          type: string
+          example: Administrator
+        email:
+          type: string
+          example: demomfi@mifos.org
+        passwordNeverExpires:
+          type: boolean
+          example: false
+        staff:
+          $ref: '#/components/schemas/StaffData'
+        selectedRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleData'
+      description: GetUsersResponse
+    GetUsersUserIdResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: mifos
+        officeId:
+          type: integer
+          format: int64
+          example: 1
+        officeName:
+          type: string
+          example: Head Office
+        firstname:
+          type: string
+          example: App
+        lastname:
+          type: string
+          example: Administrator
+        email:
+          type: string
+          example: demomfi@mifos.org
+        passwordNeverExpires:
+          type: boolean
+          example: false
+        staff:
+          $ref: '#/components/schemas/StaffData'
+        availableRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleData'
+        selectedRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleData'
+      description: GetUsersUserIdResponse
+    GetUsersTemplateResponse:
+      type: object
+      properties:
+        allowedOffices:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfficeData'
+        availableRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleData'
+        selfServiceRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleData'
+      description: GetUsersTemplateResponse
+    PutUsersUserIdRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: Test
+        password:
+          type: string
+          example: window75
+        repeatPassword:
+          type: string
+          example: window75
+      description: PutUsersUserIdRequest
+    PutUsersUserIdResponse:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+          example: 1
+        resourceId:
+          type: integer
+          format: int64
+          example: 11
+        changes:
+          $ref: '#/components/schemas/PutUsersUserIdResponseChanges'
+      description: PutUsersUserIdResponse
+    PutUsersUserIdResponseChanges:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: Test
+        passwordEncoded:
+          type: string
+          example: abc3326b1bb376351c7baeb4175f5e0504e33aadf6a158474a6d71de1befae51
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    tenantid:
+      type: apiKey
+      name: fineract-platform-tenantid
+      in: header
+  CommandProcessingResult:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+        groupId:
+          type: integer
+          format: int64
+        clientId:
+          type: integer
+          format: int64
+        loanId:
+          type: integer
+          format: int64
+        savingsId:
+          type: integer
+          format: int64
+        subResourceId:
+          type: integer
+          format: int64
+        transactionId:
+          type: string
+        changes:
+          type: object
+          additionalProperties:
+            type: object
+        productId:
+          type: integer
+          format: int64
+        gsimId:
+          type: integer
+          format: int64
+        glimId:
+          type: integer
+          format: int64
+        rollbackTransaction:
+          type: boolean
+  RoleData:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+  PostClientClientIdAddressesRequest:
+      type: object
+      properties:
+        street:
+          type: string
+          example: Ipca
+        addressLine1:
+          type: string
+          example: Kandivali
+        addressLine2:
+          type: string
+          example: plot47
+        addressLine3:
+          type: string
+          example: charkop
+        city:
+          type: string
+          example: Mumbai
+        stateProvinceId:
+          type: integer
+          format: int32
+          example: 800
+        countryId:
+          type: integer
+          format: int32
+          example: 802
+        postalCode:
+          type: integer
+          format: int64
+          example: 400064
+      description: PostClientClientIdAddressesRequest
+    PostClientClientIdAddressesResponse:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          format: int32
+          example: 15
+      description: PostClientClientIdAddressesResponse
+    GetClientClientIdAddressesResponse:
+      type: object
+      properties:
+        client_id:
+          type: integer
+          format: int64
+          example: 111755
+        addressType:
+          type: string
+          example: PERMANENT ADDRESS
+        addressId:
+          type: integer
+          format: int32
+          example: 14
+        addressTypeId:
+          type: integer
+          format: int32
+          example: 804
+        isActive:
+          type: boolean
+          example: false
+        street:
+          type: string
+          example: anki's home
+        addressLine1:
+          type: string
+          example: test123
+        addressLine2:
+          type: string
+          example: iuyt
+        addressLine3:
+          type: string
+        townVillage:
+          type: string
+        city:
+          type: string
+          example: mumbai
+        countyDistrict:
+          type: string
+        stateProvinceId:
+          type: integer
+          format: int32
+          example: 801
+        countryName:
+          type: string
+          example: UNITED STATES
+        stateName:
+          type: string
+          example: GUJRAT
+        countryId:
+          type: integer
+          format: int32
+          example: 807
+        postalCode:
+          type: integer
+          format: int64
+          example: 400095
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
+      description: GetClientClientIdAddressesResponse
+    PutClientClientIdAddressesRequest:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int32
+          example: 67
+        street:
+          type: string
+          example: goldensource
+      description: PutClientClientIdAddressesRequest
+    PutClientClientIdAddressesResponse:
+      type: object
+      properties:
+        resourceId:
+          type: integer
+          format: int32
+          example: 67
+      description: PutClientClientIdAddressesResponse
+    GetClientsClientIdResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 27
+        accountNo:
+          type: string
+          example: "000000027"
+        status:
+          $ref: '#/components/schemas/GetClientsClientIdStatus'
+        active:
+          type: boolean
+          example: true
+        activationDate:
+          type: string
+          format: date
+        firstname:
+          type: string
+          example: savings
+        lastname:
+          type: string
+          example: test
+        displayName:
+          type: string
+          example: savings test
+        officeId:
+          type: integer
+          format: int32
+          example: 1
+        officeName:
+          type: string
+          example: Head Office
+        savingsProductId:
+          type: integer
+          format: int32
+          example: 4
+        savingsProductName:
+          type: string
+          example: account overdraft
+      description: GetClientsClientIdResponse
+    GetClientsClientIdStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 300
+        code:
+          type: string
+          example: clientStatusType.active
+        description:
+          type: string
+          example: Active
