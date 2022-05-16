@@ -1,29 +1,28 @@
 openapi: 3.0.3
 info:
-  version: 0.1
-  title: Apache Fineract
+  version: "0.1"
+  title: Orange Bank 
   description: |-
-    Apache Fineract is a secure, multi-tenanted microfinance platform
+    colors orangebank is a secure, multi-tenanted microfinance platform
 
-    The goal of the Apache Fineract API is to empower developers to build apps on top of the Apache Fineract Platform<br>The [reference app](https://cui.fineract.dev) (username: mifos, password: password) works on the same demo tenant as the interactive links in this documentation
+    The goal of the colors orangebank API is to empower developers to build apps on top of the colors orangebank Platform<br>The [reference app](https://cui.orangebank.dev) (username: mifos, password: password) works on the same demo tenant as the interactive links in this documentation
 
     - The API is organized around [REST](https://en.wikipedia.org/wiki/Representational_state_transfer)
-    - Find out more about Apache Fineract [here](/fineract-provider/api-docs/apiLive.htm#top)
-    - You can [Try The API From Your Browser](/fineract-provider/api-docs/apiLive.htm#interact)
-    - The Generic Options are available [here](/fineract-provider/api-docs/apiLive.htm#genopts)
-    - Find out more about [Updating Dates and Numbers](/fineract-provider/api-docs/apiLive.htm#dates_and_numbers)
-    - For the Authentication and the Basic of HTTP and HTTPS refer [here](/fineract-provider/api-docs/apiLive.htm#authentication_overview)
-    - Check about ERROR codes [here](/fineract-provider/api-docs/apiLive.htm#errors)
+    - Find out more about colors orangebank [here](/orangebank-provider/api-docs/apiLive.htm#top)
+    - You can [Try The API From Your Browser](/orangebank-provider/api-docs/apiLive.htm#interact)
+    - The Generic Options are available [here](/orangebank-provider/api-docs/apiLive.htm#genopts)
+    - Find out more about [Updating Dates and Numbers](/orangebank-provider/api-docs/apiLive.htm#dates_and_numbers)
+    - For the Authentication and the Basic of HTTP and HTTPS refer [here](/orangebank-provider/api-docs/apiLive.htm#authentication_overview)
+    - Check about ERROR codes [here](/orangebank-provider/api-docs/apiLive.htm#errors)
 
-    Please refer to the [old documentation](/fineract-provider/api-docs/apiLive.htm) for any documentation queries
+    Please refer to the [old documentation](/orangebank-provider/api-docs/apiLive.htm) for any documentation queries
   contact:
-    email: dev@fineract.apache.org
+    email: dev@orangebank.colors.org
   license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    name: colors 2.0
+    url: http://www.colors.org/licenses/LICENSE-2.0.html
 servers:
-- url: /fineract-provider/api/v1
-- url: https://demo.fineract.dev/fineract-provider/api/v1
+- url: https://demo.orangebank.dev/orangebank-provider/api/v1
 security:
 - basicAuth: []
   tenantid: []
@@ -133,18 +132,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostClientClientIdAddressesResponse'
-  /client/addresses/template:
-    get:
-      tags:
-      - Clients Address
-      operationId: getAddressesTemplate
-      responses:
-        default:
-          description: default response
-          content:
-            application/json:
-              schema:
-                type: string
   /clients/{clientId}:
     get:
       tags:
@@ -781,8 +768,6 @@ components:
         passwordNeverExpires:
           type: boolean
           example: false
-        staff:
-          $ref: '#/components/schemas/StaffData'
         selectedRoles:
           type: array
           items:
@@ -817,8 +802,6 @@ components:
         passwordNeverExpires:
           type: boolean
           example: false
-        staff:
-          $ref: '#/components/schemas/StaffData'
         availableRoles:
           type: array
           items:
@@ -830,11 +813,7 @@ components:
       description: GetUsersUserIdResponse
     GetUsersTemplateResponse:
       type: object
-      properties:
-        allowedOffices:
-          type: array
-          items:
-            $ref: '#/components/schemas/OfficeData'
+      properties:        
         availableRoles:
           type: array
           items:
@@ -880,15 +859,8 @@ components:
         passwordEncoded:
           type: string
           example: abc3326b1bb376351c7baeb4175f5e0504e33aadf6a158474a6d71de1befae51
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    tenantid:
-      type: apiKey
-      name: fineract-platform-tenantid
-      in: header
-  CommandProcessingResult:
+  
+    CommandProcessingResult:
       type: object
       properties:
         officeId:
@@ -926,15 +898,15 @@ components:
           format: int64
         rollbackTransaction:
           type: boolean
-  RoleData:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
-      name:
-        type: string
-  PostClientClientIdAddressesRequest:
+    RoleData:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    PostClientClientIdAddressesRequest:
       type: object
       properties:
         street:
@@ -1109,3 +1081,186 @@ components:
         description:
           type: string
           example: Active
+    PostClientsRequest:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int32
+          example: 1
+        legalFormId:
+          type: integer
+          format: int32
+          example: 1
+        fullname:
+          type: string
+          example: Client of group
+        groupId:
+          type: integer
+          format: int32
+          example: 1
+        dateFormat:
+          type: string
+          example: dd MMMM yyyy
+        locale:
+          type: string
+          example: en
+        active:
+          type: boolean
+          example: true
+        activationDate:
+          type: string
+          example: 04 March 2009
+      description: PostClientsRequest
+    PostClientsResponse:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int32
+          example: 1
+        groupId:
+          type: integer
+          format: int32
+          example: 1
+        clientId:
+          type: integer
+          format: int32
+          example: 2
+        resourceId:
+          type: integer
+          format: int32
+          example: 2
+      description: PostClientsResponse
+    DeleteClientsClientIdRequest:
+      type: object
+      description: DeleteClientsClientIdRequest
+    DeleteClientsClientIdResponse:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int32
+          example: 1
+        clientId:
+          type: integer
+          format: int32
+          example: 3
+        resourceId:
+          type: integer
+          format: int32
+          example: 3
+      description: DeleteClientsClientIdResponse
+    GetClientStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 100
+        code:
+          type: string
+          example: clientStatusType.pending
+        description:
+          type: string
+          example: Pending
+    GetClientsPageItemsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 2
+        accountNo:
+          type: string
+          example: "000000002"
+        status:
+          $ref: '#/components/schemas/GetClientStatus'
+        active:
+          type: boolean
+          example: false
+        fullname:
+          type: string
+          example: Home Farm Produce
+        displayName:
+          type: string
+          example: Home Farm Produce
+        officeId:
+          type: integer
+          format: int32
+          example: 1
+        officeName:
+          type: string
+          example: Head Office
+    GetClientsResponse:
+      type: object
+      properties:
+        totalFilteredRecords:
+          type: integer
+          format: int32
+          example: 2
+        pageItems:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/GetClientsPageItemsResponse'
+      description: GetClientsResponse
+    PostClientsClientIdRequest:
+      type: object
+      properties:
+        activationDate:
+          type: string
+          example: 03 August 2021
+        dateFormat:
+          type: string
+          example: dd MMM yyyy
+        locale:
+          type: string
+          example: en
+      description: PostClientsClientIdRequest
+    PostClientsClientIdResponse:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int32
+          example: 2
+        clientId:
+          type: integer
+          format: int32
+          example: 2
+        resourceId:
+          type: integer
+          format: int32
+          example: 2
+      description: PostClientsClientIdResponse
+    PutClientsClientIdRequest:
+      type: object
+      properties:
+        externalId:
+          type: string
+          example: 786444UUUYYH7
+      description: PutClientsClientIdRequest
+    PutClientsClientIdResponse:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int32
+          example: 1
+        clientId:
+          type: integer
+          format: int32
+          example: 1
+        resourceId:
+          type: integer
+          format: int32
+          example: 1
+        changes:
+          $ref: '#/components/schemas/PutClientsClientIdRequest'
+      description: PutClientsClientIdResponse
+
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
